@@ -20,26 +20,28 @@ public class MainMenu extends JFrame {
 
 	private JLabel titleText; // could be changed to an image later
 	private JLabel versionText;
-	
-	private JButton startButton;
-	private JButton aboutButton;
-	private JButton exitButton;
-	
+
+	private RoundButton startButton;
+	private RoundButton aboutButton;
+	private RoundButton exitButton;
+
+	Rules rules = new Rules();
+
 	public MainMenu() {
 		createGUI();
 	}
-	
+
 	private void createGUI() {
 		// maybe change to prompt user to confirm
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		
+
 		Container pane = this.getContentPane();
 		pane.setBackground(Color.black); // black background
 		pane.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 		c.weightx = 1.0;
 		c.weighty = 1.0; // fill frame vertically
-		
+
 		titleText = new JLabel("Tic-Tac-Toe", SwingConstants.CENTER);
 		titleText.setFont(new Font("Helvetica", Font.BOLD, 30));
 		titleText.setForeground(new Color(255, 255, 255)); // yellow
@@ -49,42 +51,58 @@ public class MainMenu extends JFrame {
 		c.gridwidth = 3;
 		c.weighty = 0.5;
 		pane.add(titleText, c); // add to pane with these constraints
-		
-		startButton = new JButton("Start");
+
+		startButton = new RoundButton("Start");
 		startButton.setFont(new Font("Helvetica", Font.BOLD, 20));
 		c.fill = GridBagConstraints.BOTH;
 		c.gridx = 0;
 		c.gridy = 1;
 		c.gridwidth = 1;
 		c.weighty = 1.0;
-		c.insets = new Insets(0,10,0,10);
+		c.insets = new Insets(0, 10, 0, 10);
 		pane.add(startButton, c);
-		
-		aboutButton = new JButton("About");
-		aboutButton.setFont(new Font("Helvetica", Font.BOLD, 20));
+
+		rulesButton = new JButton("Rules");
+		rulesButton.setFont(new Font("Helvetica", Font.BOLD, 20));
 		c.fill = GridBagConstraints.BOTH;
 		c.gridx = 1;
 		c.gridy = 2;
-		c.insets = new Insets(0,10,0,10);
-		pane.add(aboutButton, c);
+		c.insets = new Insets(0, 10, 0, 10);
+		pane.add(rulesButton, c);
+
+		c.fill = GridBagConstraints.BOTH;
+		c.gridx = 2;
+		c.gridy = 2;
+		c.weighty = 1.0;
+		c.weightx = 1.0;
+		pane.add(new PanelThatDrawsX(), c);
 		
-		exitButton = new JButton("Exit");
+		exitButton = new RoundButton("Exit");
 		exitButton.setFont(new Font("Helvetica", Font.BOLD, 20));
 		c.fill = GridBagConstraints.BOTH;
 		c.gridx = 2;
 		c.gridy = 3;
-		c.insets = new Insets(0,10,0,10);
+		c.insets = new Insets(0, 10, 0, 10);
 		pane.add(exitButton, c);
-		
-		versionText = new JLabel("Version " + Driver.version, SwingConstants.RIGHT);
+
+		versionText = new JLabel("Version " + Driver.version,
+				SwingConstants.RIGHT);
 		versionText.setForeground(Color.white);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 2;
 		c.gridy = 4;
 		c.weighty = 0.0;
-		c.insets = new Insets(0,0,0,0);
+		c.insets = new Insets(0, 0, 0, 0);
 		pane.add(versionText, c);
-		
+
+		// rules button
+		rulesButton.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent arg0) {
+				rules.setVisible(true);
+			}
+		});
+
 		// exit clicked
 		exitButton.addActionListener(new ActionListener() {
 
@@ -93,9 +111,9 @@ public class MainMenu extends JFrame {
 				if (Frame.getFrames().length != 0)
 					Frame.getFrames()[0].dispose();
 			}
-			
+
 		});
-		
+
 		pack();
 		setVisible(true);
 	}
