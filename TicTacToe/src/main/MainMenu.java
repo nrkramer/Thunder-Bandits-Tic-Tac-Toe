@@ -21,9 +21,9 @@ public class MainMenu extends JFrame {
 	private JLabel titleText; // could be changed to an image later
 	private JLabel versionText;
 	
-	private JButton startButton;
-	private JButton aboutButton;
-	private JButton exitButton;
+	private RoundButton startButton;
+	private RoundButton aboutButton;
+	private RoundButton exitButton;
 	
 	public MainMenu() {
 		createGUI();
@@ -50,7 +50,7 @@ public class MainMenu extends JFrame {
 		c.weighty = 0.5;
 		pane.add(titleText, c); // add to pane with these constraints
 		
-		startButton = new JButton("Start");
+		startButton = new RoundButton("Start");
 		startButton.setFont(new Font("Helvetica", Font.BOLD, 20));
 		c.fill = GridBagConstraints.BOTH;
 		c.gridx = 0;
@@ -60,7 +60,28 @@ public class MainMenu extends JFrame {
 		c.insets = new Insets(0,10,0,10);
 		pane.add(startButton, c);
 		
-		aboutButton = new JButton("About");
+		c.fill = GridBagConstraints.BOTH;
+		c.gridx = 1;
+		c.gridy = 1;
+		c.weighty = 1.0;
+		c.weightx = 1.0;
+		pane.add(new PanelThatDrawsX(), c);
+		
+		c.fill = GridBagConstraints.BOTH;
+		c.gridx = 2;
+		c.gridy = 1;
+		c.weighty = 1.0;
+		c.weightx = 1.0;
+		pane.add(new PanelThatDrawsX(), c);
+		
+		c.fill = GridBagConstraints.BOTH;
+		c.gridx = 0;
+		c.gridy = 2;
+		c.weighty = 1.0;
+		c.weightx = 1.0;
+		pane.add(new PanelThatDrawsX(), c);
+		
+		aboutButton = new RoundButton("About");
 		aboutButton.setFont(new Font("Helvetica", Font.BOLD, 20));
 		c.fill = GridBagConstraints.BOTH;
 		c.gridx = 1;
@@ -68,13 +89,34 @@ public class MainMenu extends JFrame {
 		c.insets = new Insets(0,10,0,10);
 		pane.add(aboutButton, c);
 		
-		exitButton = new JButton("Exit");
+		c.fill = GridBagConstraints.BOTH;
+		c.gridx = 2;
+		c.gridy = 2;
+		c.weighty = 1.0;
+		c.weightx = 1.0;
+		pane.add(new PanelThatDrawsX(), c);
+		
+		exitButton = new RoundButton("Exit");
 		exitButton.setFont(new Font("Helvetica", Font.BOLD, 20));
 		c.fill = GridBagConstraints.BOTH;
 		c.gridx = 2;
 		c.gridy = 3;
 		c.insets = new Insets(0,10,0,10);
 		pane.add(exitButton, c);
+		
+		c.fill = GridBagConstraints.BOTH;
+		c.gridx = 0;
+		c.gridy = 3;
+		c.weighty = 1.0;
+		c.weightx = 1.0;
+		pane.add(new PanelThatDrawsX(), c);
+		
+		c.fill = GridBagConstraints.BOTH;
+		c.gridx = 1;
+		c.gridy = 3;
+		c.weighty = 1.0;
+		c.weightx = 1.0;
+		pane.add(new PanelThatDrawsX(), c);
 		
 		versionText = new JLabel("Version " + Driver.version, SwingConstants.RIGHT);
 		versionText.setForeground(Color.white);
