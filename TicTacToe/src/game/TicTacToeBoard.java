@@ -7,9 +7,11 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
 import javax.swing.JPanel;
@@ -29,9 +31,19 @@ public class TicTacToeBoard extends JPanel {
 	private boolean showHover = false;
 	private boolean showNumbers = false;
 	private Rectangle hoverRegion = new Rectangle();
+	private boolean showPlayerMouseIndicator = false;
+	private String playerIndicator = "P1";
+	private Point mousePos = new Point();
+	private int[] boardState = new int[9]; // 0 is nothing, 1 is x, 2 is o
+	private int drawStrike = -1;
+	private int winner = -1;
 	
 	public TicTacToeBoard() {
+		for (int i = 0; i < 9; i++) {
+			boardState[i] = 0;
+		}
 		setForeground(Color.white);
+		mousePos = getMousePosition();
 		font = new Font("Helvetica", Font.BOLD, 80);
 		stroke1 = new BasicStroke(gridLineWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER);
 		stroke2 = new BasicStroke(letterWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER);
@@ -48,7 +60,6 @@ public class TicTacToeBoard extends JPanel {
 						if (hoverRegion.contains(arg0.getPoint())) {
 							showHover = true;
 							i = 2; j = 2;
-							repaint();
 						}
 					}
 				}
@@ -56,9 +67,83 @@ public class TicTacToeBoard extends JPanel {
 					setCursor(new Cursor(Cursor.HAND_CURSOR));
 				else
 					setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+				
+				mousePos = arg0.getPoint();
+				repaint();
 			}
 			
 		});
+		
+		addMouseListener(new MouseListener() {
+
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent arg0) {
+				showPlayerMouseIndicator = true;
+				repaint();
+			}
+
+			@Override
+			public void mouseExited(MouseEvent arg0) {
+				showPlayerMouseIndicator = false;
+				repaint();
+			}
+
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+			}
+			
+		});
+	}
+	
+	public Point getXYFromCell(int cell) {
+		if (cell > -1) {
+			int x = 0;
+			int y = 0;
+			x = cell;
+			if ((cell >= 3) && (cell < 6)) {
+				x = cell - 3;
+				y = 1;
+			} else if ((cell >= 6)) {
+				x = cell - 6;
+				y = 2;
+			}
+			return new Point(x, y);
+		}
+		return new Point(-1, -1);
+	}
+	
+	public void setBoardState(int[] state) {
+		boardState = state;
+		repaint();
+	}
+	
+	public void setPlayerIndicator(String indicator) {
+		playerIndicator = indicator;
+	}
+	
+	public void setStrikeThrough(int winner, int strike) {
+		// -1 is no winner
+		// 0 is player 1 win
+		// 1 is player 2 win
+		this.winner = winner;
+		// -1 is don't draw
+		// 0 is row 1
+		// 1 is row 2
+		// 2 is row 3
+		// 3 is col 1
+		// 4 is col 2
+		// 5 is col 3
+		// 6 is top-left to bottom-right
+		// 7 is top-right to bottom-left
+		this.drawStrike = strike;
 	}
 	
 	public Rectangle getCell(int _x, int _y) {
@@ -72,6 +157,25 @@ public class TicTacToeBoard extends JPanel {
 		int height = ((d.height) / 3) - ((_y + 1) * letterWidth) - padding;
 		Rectangle r = new Rectangle(x, y, width, height);
 		return r;
+	}
+	
+	public int getCellFromCoords(int x, int y) {
+		Dimension d = getSize();
+		int cell = -1;
+		
+		int _x = x / ((d.width / 3) + padding / 3);
+		int _y = y / ((d.height / 3) + padding / 3);
+		
+		if (getCell(_x, _y).contains(x, y)) // got lazy
+		{
+			cell = _x;
+			if (_y == 1)
+				cell = _x + 3;
+			if (_y == 2)
+				cell = _x + 6;
+		}
+		
+		return cell;
 	}
 	
 	private void drawX(Graphics2D g, int x, int y) {
@@ -111,8 +215,8 @@ public class TicTacToeBoard extends JPanel {
 		
 		// draw hover
 		g.setPaint(new Color(50, 50, 50));
-		if (showHover)
-			g.fillRect(hoverRegion.x, hoverRegion.y, hoverRegion.width, hoverRegion.height);
+		if (showHover) 
+			g.fill3DRect(hoverRegion.x, hoverRegion.y, hoverRegion.width, hoverRegion.height, true);
 		
 		// draw numbers
 		if (showNumbers) {
@@ -130,7 +234,63 @@ public class TicTacToeBoard extends JPanel {
 		
 		// draw X's,O's
 		g.setStroke(stroke2);
-		drawX(g, 1, 1);
-		drawO(g, 2, 0);
+		Point p = new Point();
+		for(int i = 0; i < 9; i++) {
+			if (boardState[i] == 1) {
+				p = getXYFromCell(i);
+				drawX(g, p.x, p.y);
+			} else if (boardState[i] == 2) {
+				p = getXYFromCell(i);
+				drawO(g, p.x, p.y);
+			}
+		}
+		
+		// set strike-through color
+		if (winner == 0)
+			g.setColor(xColor);
+		if (winner == 1)
+			g.setColor(oColor);
+		
+		// draw strike-through for win
+		if (drawStrike >= 0) {
+			switch(drawStrike) {
+			case 0:
+				// row 1
+				break;
+			case 1:
+				// row 2
+				break;
+			case 2:
+				// row 3
+				break;
+			case 3:
+				// col 1
+				break;
+			case 4:
+				// col 2
+				break;
+			case 5:
+				// col 3
+				break;
+			case 6:
+				// top-left -> bottom-right
+				break;
+			case 7:
+				// top-right -> bottom-left
+				break;
+			}
+		}
+		
+		// draw player indicator
+		if (playerIndicator == "P1")
+			g.setColor(xColor);
+		else 
+			g.setColor(oColor);
+		g.setFont(new Font("Helvetica", Font.PLAIN, 30));
+		setForeground(Color.white);
+		if (mousePos != null) {
+			if (showPlayerMouseIndicator)
+				g.drawString(playerIndicator, mousePos.x + 15, mousePos.y + 40);
+		}
 	}
 }
