@@ -21,6 +21,6 @@ public class Driver {
 	}
 	
 	public static void ticTacToeInterface() {
-		MainMenu menu = new MainMenu();
+		new MainMenu();
 	}
 }
