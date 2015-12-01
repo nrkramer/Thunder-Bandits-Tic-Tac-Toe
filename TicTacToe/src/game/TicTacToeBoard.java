@@ -89,7 +89,7 @@ public class TicTacToeBoard extends JPanel {
 			@Override
 			public void mouseExited(MouseEvent arg0) {
 				showPlayerMouseIndicator = false;
-				repaint();
+				repaint(); // something for commit
 			}
 
 			@Override
