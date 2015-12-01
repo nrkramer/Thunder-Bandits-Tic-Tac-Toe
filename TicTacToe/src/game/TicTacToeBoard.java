@@ -180,14 +180,26 @@ public class TicTacToeBoard extends JPanel {
 	
 	private void drawX(Graphics2D g, int x, int y) {
 		g.setPaint(xColor);
-		Rectangle r = getCell(x, y);
+		Rectangle cell = getCell(x, y);
+		int aspect = 0;
+		if (cell.width > cell.height)
+			aspect = cell.height;
+		else
+			aspect = cell.width;
+		Rectangle r = new Rectangle(cell.x + (cell.width - aspect) / 2, cell.y + (cell.height - aspect) / 2, aspect, aspect);
 		g.drawLine(r.x, r.y, r.x + r.width, r.y + r.height);
 		g.drawLine(r.x + r.width, r.y, r.x, r.y + r.height);
 	}
 	
 	private void drawO(Graphics2D g, int x, int y) {
 		g.setColor(oColor);
-		Rectangle r = getCell(x, y);
+		Rectangle cell = getCell(x, y);
+		int aspect = 0;
+		if (cell.width > cell.height)
+			aspect = cell.height;
+		else
+			aspect = cell.width;
+		Rectangle r = new Rectangle(cell.x + (cell.width - aspect) / 2, cell.y + (cell.height - aspect) / 2, aspect, aspect);
 		g.drawOval(r.x, r.y, r.width, r.height);
 	}
 	
@@ -221,15 +233,15 @@ public class TicTacToeBoard extends JPanel {
 		// draw numbers
 		if (showNumbers) {
 			g.setPaint(numberColor);
-			drawNumber(g, 0, 0, 1);
-			drawNumber(g, 1, 0, 2);
-			drawNumber(g, 2, 0, 3);
+			drawNumber(g, 0, 0, 7);
+			drawNumber(g, 1, 0, 8);
+			drawNumber(g, 2, 0, 9);
 			drawNumber(g, 0, 1, 4);
 			drawNumber(g, 1, 1, 5);
 			drawNumber(g, 2, 1, 6);
-			drawNumber(g, 0, 2, 7);
-			drawNumber(g, 1, 2, 8);
-			drawNumber(g, 2, 2, 9);
+			drawNumber(g, 0, 2, 1);
+			drawNumber(g, 1, 2, 2);
+			drawNumber(g, 2, 2, 3);
 		}
 		
 		// draw X's,O's
