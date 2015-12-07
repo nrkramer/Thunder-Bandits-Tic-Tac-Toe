@@ -36,7 +36,6 @@ public class TicTacToeBoard extends JPanel {
 	private Point mousePos = new Point();
 	private int[] boardState = new int[9]; // 0 is nothing, 1 is x, 2 is o
 	private int drawStrike = -1;
-	private int winner = -1;
 	
 	public TicTacToeBoard() {
 		for (int i = 0; i < 9; i++) {
@@ -53,23 +52,7 @@ public class TicTacToeBoard extends JPanel {
 			
 			@Override
 			public void mouseMoved(MouseEvent arg0) {
-				showHover = false;
-				for(int i = 0; i <= 2; i++) {
-					for(int j = 0; j <= 2; j++) {
-						hoverRegion = getCell(i, j);
-						if (hoverRegion.contains(arg0.getPoint())) {
-							showHover = true;
-							i = 2; j = 2;
-						}
-					}
-				}
-				if (showHover)
-					setCursor(new Cursor(Cursor.HAND_CURSOR));
-				else
-					setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-				
-				mousePos = arg0.getPoint();
-				repaint();
+				Update(arg0.getPoint());
 			}
 			
 		});
@@ -103,6 +86,31 @@ public class TicTacToeBoard extends JPanel {
 		});
 	}
 	
+	public void Update(Point p) {
+		showHover = false;
+		boolean cellTaken = false;
+		for(int i = 0; i <= 2; i++) {
+			for(int j = 0; j <= 2; j++) {
+				hoverRegion = getCell(i, j);
+				if (hoverRegion.contains(p)) {
+					if (boardState[getCellFromCoords(p.x, p.y)] != 0)
+						cellTaken = true;
+					if (!cellTaken)
+						showHover = true;
+					i = 2; j = 2;
+				}
+			}
+		}
+		if (showHover && (!cellTaken)) {
+			setCursor(new Cursor(Cursor.HAND_CURSOR));
+		} else {
+			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		}
+		
+		mousePos = p;
+		repaint();
+	}
+	
 	public Point getXYFromCell(int cell) {
 		if (cell > -1) {
 			int x = 0;
@@ -129,20 +137,7 @@ public class TicTacToeBoard extends JPanel {
 		playerIndicator = indicator;
 	}
 	
-	public void setStrikeThrough(int winner, int strike) {
-		// -1 is no winner
-		// 0 is player 1 win
-		// 1 is player 2 win
-		this.winner = winner;
-		// -1 is don't draw
-		// 0 is row 1
-		// 1 is row 2
-		// 2 is row 3
-		// 3 is col 1
-		// 4 is col 2
-		// 5 is col 3
-		// 6 is top-left to bottom-right
-		// 7 is top-right to bottom-left
+	public void setStrikeThrough(int strike) {
 		this.drawStrike = strike;
 	}
 	
@@ -219,12 +214,6 @@ public class TicTacToeBoard extends JPanel {
 		g.setFont(font);
 		g.setStroke(stroke1);
 		
-		// draw grid
-		g.drawLine(padding, b.height / 3, b.width - padding, b.height / 3);
-		g.drawLine(padding, (int)(b.height / 1.5), b.width - padding, (int)(b.height / 1.5));
-		g.drawLine(b.width / 3, padding, b.width / 3, b.height - padding);
-		g.drawLine((int)(b.width / 1.5), padding, (int)(b.width / 1.5), b.height - padding);
-		
 		// draw hover
 		g.setPaint(new Color(50, 50, 50));
 		if (showHover) 
@@ -257,41 +246,94 @@ public class TicTacToeBoard extends JPanel {
 			}
 		}
 		
-		// set strike-through color
-		if (winner == 0)
-			g.setColor(xColor);
-		if (winner == 1)
-			g.setColor(oColor);
-		
 		// draw strike-through for win
 		if (drawStrike >= 0) {
+			int x = 0, y = 0, x2 = 0, y2 = 0;
+			Rectangle r = new Rectangle();
+			g.setColor(new Color(255, 255, 102));
 			switch(drawStrike) {
 			case 0:
+				r = getCell(0, 0);
+				x = r.x;
+				y = r.y + r.height / 2;
+				r = getCell(2, 0);
+				x2 = r.x + r.width;
+				y2 = y;
 				// row 1
 				break;
 			case 1:
+				r = getCell(0, 1);
+				x = r.x;
+				y = r.y + r.height / 2;
+				r = getCell(2, 1);
+				x2 = r.x + r.width;
+				y2 = y;
 				// row 2
 				break;
 			case 2:
+				r = getCell(0, 2);
+				x = r.x;
+				y = r.y + r.height / 2;
+				r = getCell(2, 2);
+				x2 = r.x + r.width;
+				y2 = y;
 				// row 3
 				break;
 			case 3:
+				r = getCell(0, 0);
+				x = r.x + r.width / 2;
+				y = r.y;
+				r = getCell(0, 2);
+				x2 = x;
+				y2 = r.y + r.height;
 				// col 1
 				break;
 			case 4:
+				r = getCell(1, 0);
+				x = r.x + r.width / 2;
+				y = r.y;
+				r = getCell(1, 2);
+				x2 = x;
+				y2 = r.y + r.height;
 				// col 2
 				break;
 			case 5:
+				r = getCell(2, 0);
+				x = r.x + r.width / 2;
+				y = r.y;
+				r = getCell(2, 2);
+				x2 = x;
+				y2 = r.y + r.height;
 				// col 3
 				break;
 			case 6:
+				r = getCell(0, 0);
+				x = r.x;
+				y = r.y;
+				r = getCell(2, 2);
+				x2 = r.x + r.width;
+				y2 = r.y + r.height;
 				// top-left -> bottom-right
 				break;
 			case 7:
+				r = getCell(2, 0);
+				x = r.x + r.width;
+				y = r.y;
+				r = getCell(0, 2);
+				x2 = r.x;
+				y2 = r.y + r.height;
 				// top-right -> bottom-left
 				break;
 			}
+			g.drawLine(x, y, x2, y2);
 		}
+		
+		// draw grid
+		g.setColor(Color.white);
+		g.drawLine(padding, b.height / 3, b.width - padding, b.height / 3);
+		g.drawLine(padding, (int)(b.height / 1.5), b.width - padding, (int)(b.height / 1.5));
+		g.drawLine(b.width / 3, padding, b.width / 3, b.height - padding);
+		g.drawLine((int)(b.width / 1.5), padding, (int)(b.width / 1.5), b.height - padding);
 		
 		// draw player indicator
 		if (playerIndicator == "P1")

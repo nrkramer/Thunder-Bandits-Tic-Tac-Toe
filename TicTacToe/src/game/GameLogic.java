@@ -6,20 +6,24 @@ public class GameLogic {
 		Player1,
 		Player2,
 		Player1Win,
-		Player2Win
+		Player2Win,
+		PlayerTie
 	}
 	
 	private GameState state = GameState.Player1;
 	private boolean[] player1Cells = new boolean[9];
 	private boolean[] player2Cells = new boolean[9];
+	private int winCondition = -1;
 	private int lastCell = -1;
 	private String status = "";
 	private boolean undoAvailable = false;
 	
-	public GameLogic() {}
+	public GameLogic() {
+		status = "Player 1's move.";
+	}
 	
 	public void selectedCell(int c) {
-		if ((state != GameState.Player1Win) && (state != GameState.Player2Win)) {
+		if ((state != GameState.Player1Win) && (state != GameState.Player2Win) && (state != GameState.PlayerTie)) {
 			if (!player1Cells[c] && !player2Cells[c]) {
 				if (state == GameState.Player1) {
 						player1Cells[c] = true;
@@ -50,28 +54,64 @@ public class GameLogic {
 			state = GameState.Player2Win;
 			status = "Player 2 Wins!";
 			undoAvailable = false;
+		} else {
+			if (isTie(player1Cells, player2Cells)) {
+				state = GameState.PlayerTie;
+				status = "Tie game.";
+				undoAvailable = false;
+			}
 		}
+	}
+	
+	private boolean isTie(boolean[] p1Cells, boolean[] p2Cells) {
+		boolean tie = true;
+		for(int i = 0; i < p1Cells.length; i++) {
+			if (!(p1Cells[i] || p2Cells[i])) {
+				tie = false;
+				i = p1Cells.length;
+				undoAvailable = true;
+			} else {
+				undoAvailable = false;
+			}
+		}
+		
+		return tie;
 	}
 	
 	private boolean isWin(boolean[] cells) {
 		// 8 win conditions
-		if (cells[0] && cells[1] && cells[2]) // first row
+		if (cells[0] && cells[1] && cells[2]) {// first row
+			winCondition = 0;
 			return true;
-		else if (cells[0] && cells[3] && cells[6]) // first col
+		} else if (cells[0] && cells[3] && cells[6]) { // first col
+			winCondition = 3;
 			return true;
-		else if (cells[0] && cells[4] && cells[8]) // diagonal top left to bottom right
+		} else if (cells[0] && cells[4] && cells[8]) {// diagonal top left to bottom right
+			winCondition = 6;
 			return true;
-		else if (cells[2] && cells[4] && cells[6]) // diagonal top right to bottom left
+		} else if (cells[2] && cells[4] && cells[6]) {// diagonal top right to bottom left
+			winCondition = 7;
 			return true;
-		else if (cells[1] && cells[4] && cells[7]) // second col
+		} else if (cells[1] && cells[4] && cells[7]) {// second col
+			winCondition = 4;
 			return true;
-		else if (cells[2] && cells[5] && cells[8]) // third col
+		} else if (cells[2] && cells[5] && cells[8]) {// third col
+			winCondition = 5;
 			return true;
-		else if (cells[3] && cells[4] && cells[5]) // second row
+		} else if (cells[3] && cells[4] && cells[5]) {// second row
+			winCondition = 1;
 			return true;
-		else if (cells[6] && cells[7] && cells[8]) // third row
+		} else if (cells[6] && cells[7] && cells[8]) {// third row
+			winCondition = 2;
 			return true;
-		else return false;
+		} else {
+			winCondition = -1;
+			return false;
+		}
+	}
+	
+	public int getWinCondition() {
+		return winCondition;
 	}
 	
 	public String getPlayerCurrentMove() {
@@ -124,5 +164,15 @@ public class GameLogic {
 		}
 		
 		return state;
+	}
+	
+	public void Reset() {
+		player1Cells = new boolean[9];
+		player2Cells = new boolean[9];
+		undoAvailable = false;
+		status = "Player 1's move.";
+		lastCell = -1;
+		winCondition = -1;
+		state = GameState.Player1;
 	}
 }

@@ -26,8 +26,6 @@ public class MainMenu extends JFrame {
 	private RoundButton rulesButton;
 	private RoundButton exitButton;
 	
-	//Rules rules = new Rules();
-	
 	public MainMenu() {
 		super("Tic-Tac-Toe");
 		setMinimumSize(new Dimension(600, 600));
