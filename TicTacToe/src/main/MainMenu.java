@@ -9,6 +9,9 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -25,6 +28,9 @@ public class MainMenu extends JFrame {
 	private RoundButton startButton;
 	private RoundButton rulesButton;
 	private RoundButton exitButton;
+	private RoundButton leaderBoard;
+	private UserNames userNames;
+	Rules rules = new Rules();
 	
 	public MainMenu() {
 		super("Tic-Tac-Toe");
@@ -89,6 +95,16 @@ public class MainMenu extends JFrame {
 		c.insets = new Insets(0,10,0,10);
 		mainMenuPanel.add(exitButton, c);
 		
+		leaderBoard = new RoundButton("Leaders");
+		leaderBoard.setFont(new Font("Helvetica", Font.BOLD, 20));
+		c.fill = GridBagConstraints.BOTH;
+		c.gridx = 2;
+		c.gridy = 2;
+		c.gridwidth = 1;
+		c.weighty = 0.2;
+		c.insets = new Insets(0,10,0,10);
+		mainMenuPanel.add(leaderBoard, c);
+		
 		JLabel versionText = new JLabel("Version " + Driver.version, SwingConstants.RIGHT);
 		versionText.setForeground(Color.white);
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -113,7 +129,6 @@ public class MainMenu extends JFrame {
 		startButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				// Luke: you'll want to change this to the player entry panel
 				setContentPane(gamePanel); // change this to change where start goes
 				validate();
 			}
@@ -134,9 +149,28 @@ public class MainMenu extends JFrame {
 		rulesButton.addActionListener(new ActionListener(){
 			
 			public void actionPerformed(ActionEvent arg0){
-				//rules.setVisible(true);
+				rules.setVisible(true);
 			}
 		});
+		
+		/*leaderBoard.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				try{
+				FileReader reader = new FileReader("C:\\Users\\Billy\\Downloads\\Thunder-Bandits-Tic-Tac-Toe-master.zip\\Thunder-Bandits-Tic-Tac-Toe-master\\TicTacToe\\src\\main\\LeaderBoards.txt");
+	            int character;
+	 
+	            while ((character = reader.read()) != -1) {
+	                System.out.print((char) character);
+	            }
+	            reader.close();
+	 
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        }
+			}		
+		});*/
 		
 		pack();
 		setVisible(true);

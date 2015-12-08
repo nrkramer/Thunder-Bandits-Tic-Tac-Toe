@@ -4,7 +4,7 @@ public class Player {
 	private int wins = 0;
 	private int losses = 0;
 	private int ties = 0;
-	private String playerName = "P1";
+	private String playerName;
 	
 	public Player(String name) {
 		playerName = name;
