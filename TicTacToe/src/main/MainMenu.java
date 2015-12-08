@@ -108,6 +108,16 @@ public class MainMenu extends JFrame {
 		c.insets = new Insets(0,10,0,10);
 		mainMenuPanel.add(leaderBoard, c);
 		
+		leaderBoard = new RoundButton("Leaders");
+		leaderBoard.setFont(new Font("Helvetica", Font.BOLD, 20));
+		c.fill = GridBagConstraints.BOTH;
+		c.gridx = 2;
+		c.gridy = 2;
+		c.gridwidth = 1;
+		c.weighty = 0.2;
+		c.insets = new Insets(0,10,0,10);
+		mainMenuPanel.add(leaderBoard, c);
+		
 		JLabel versionText = new JLabel("Version " + Driver.version, SwingConstants.RIGHT);
 		versionText.setForeground(Color.white);
 		c.fill = GridBagConstraints.HORIZONTAL;
