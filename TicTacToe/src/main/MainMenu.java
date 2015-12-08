@@ -9,7 +9,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -26,9 +25,10 @@ public class MainMenu extends JFrame {
 	private RoundButton rulesButton;
 	private RoundButton exitButton;
 	private RoundButton leaderBoard;
-	private UserNames userNames;
+	//private UserNames userNames;
 	private Rules rules;
 	private LeaderBoard lb;
+	private PlayerNameEntry gotEm;
 	
 	public MainMenu() {
 		super("Tic-Tac-Toe");
@@ -117,7 +117,7 @@ public class MainMenu extends JFrame {
 		mainMenuPanel.add(versionText, c);
 		
 		gamePanel = new GamePanel();
-		userNames = new UserNames();
+		//userNames = new UserNames();
 		
 		gamePanel.btnBack.addActionListener(new ActionListener() {
 			@Override
@@ -133,12 +133,17 @@ public class MainMenu extends JFrame {
 		lb = new LeaderBoard(this);
 		lb.setModal(true);
 		
+		gotEm = new PlayerNameEntry();
+		gotEm.setModal(true);
+		
+		
 		setContentPane(mainMenuPanel);
 		
 		// start clicked 
 		startButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				gotEm.setVisible(true);
 				setContentPane(gamePanel); // change this to change where start goes
 				validate();
 				gamePanel.setFocusable(true);

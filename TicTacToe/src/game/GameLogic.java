@@ -1,5 +1,7 @@
 package game;
 
+import main.PlayerNameEntry;
+
 public class GameLogic {
 	
 	public static enum GameState {
@@ -17,6 +19,9 @@ public class GameLogic {
 	private int lastCell = -1;
 	private String status = "";
 	private boolean undoAvailable = false;
+	private PlayerNameEntry pne2 = new PlayerNameEntry();
+	private String player1 = pne2.getPlayer1Name();
+	private String player2 = pne2.getPlayer2Name();
 	
 	public GameLogic() {
 		status = "Player 1's move.";
@@ -28,13 +33,13 @@ public class GameLogic {
 				if (state == GameState.Player1) {
 						player1Cells[c] = true;
 						state = GameState.Player2;
-						status = "Player 2's move.";
+						status = player1 +"'s move.";
 						lastCell = c;
 						undoAvailable = true;
 				} else if (state == GameState.Player2) {
 						player2Cells[c] = true;
 						state = GameState.Player1;
-						status = "Player 1's move.";
+						status = player2 +"'s move.";
 						lastCell = c;
 						undoAvailable = true;
 				}
@@ -48,11 +53,11 @@ public class GameLogic {
 	private void calculateWin() {
 		if (isWin(player1Cells)) {
 			state = GameState.Player1Win;
-			status = "Player 1 Wins!";
+			status = player1 + " Wins!";
 			undoAvailable = false;
 		} else if (isWin(player2Cells)) {
 			state = GameState.Player2Win;
-			status = "Player 2 Wins!";
+			status =  player2 + " Wins!";
 			undoAvailable = false;
 		} else {
 			if (isTie(player1Cells, player2Cells)) {

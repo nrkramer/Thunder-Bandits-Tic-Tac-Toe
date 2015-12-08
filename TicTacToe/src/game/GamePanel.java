@@ -19,16 +19,18 @@ import javax.swing.JPanel;
 
 import game.GameLogic.GameState;
 import main.Driver;
+import main.PlayerNameEntry;
 
 public class GamePanel extends JPanel {
 	private static final long serialVersionUID = -5452925014639836146L;
 
+	private PlayerNameEntry pne = new PlayerNameEntry();
 	private Player p1;
 	private Player p2;
 	public JButton btnBack = new JButton("Back");
 	private TicTacToeBoard board = new TicTacToeBoard();
 	private JButton undo = new JButton("Undo Last Move");
-	private JLabel lblStatus = new JLabel("Player 1's Move");
+	private JLabel lblStatus = new JLabel(pne.getPlayer1Name() +" Move");
 	private GameLogic logic = new GameLogic();
 	private final JPanel panel = new JPanel();
 	private final JButton btnNewGame = new JButton("New Game");
@@ -43,8 +45,8 @@ public class GamePanel extends JPanel {
 	 * Create the panel.
 	 */
 	public GamePanel() {
-		setPlayer1("Player 1");
-		setPlayer2("Player 2");
+		setPlayer1(pne.getPlayer1Name());
+		setPlayer2(pne.getPlayer2Name());
 		
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
