@@ -51,11 +51,11 @@ public class Driver {
 			BufferedReader br = new BufferedReader(new FileReader(f));
 			String line = br.readLine();
 			while(line != null) {
-				String[] pcs = line.split(" ");
+				String[] pcs = line.split(",");
 				ArrayList<Integer> records = new ArrayList<Integer>();
-				records.add(Integer.valueOf(pcs[1]));
-				records.add(Integer.valueOf(pcs[2]));
-				records.add(Integer.valueOf(pcs[3]));
+				records.add(Integer.valueOf(pcs[1])); // wins
+				records.add(Integer.valueOf(pcs[2])); // losses
+				records.add(Integer.valueOf(pcs[3])); // ties
 				scores.put(pcs[0], records);
 				line = br.readLine();
 			}
@@ -78,7 +78,8 @@ public class Driver {
 			while(it.hasNext()) {
 				Map.Entry pair = (Map.Entry)it.next();
 				ArrayList<Integer> value = (ArrayList<Integer>)pair.getValue();
-				writer.println(pair.getKey() + " " + value.get(0) + " " + value.get(1) + " " + value.get(2));
+				// player_name,wins,losses,ties
+				writer.println(pair.getKey() + "," + value.get(0) + "," + value.get(1) + "," + value.get(2));
 			}
 			writer.close();
 		} catch (IOException e) {
@@ -93,11 +94,6 @@ public class Driver {
 			public void windowClosed(WindowEvent e) {
 				// record scores here
 				writeScores();
-				Iterator it = scores.entrySet().iterator();
-				while(it.hasNext()) {
-					Map.Entry pair = (Map.Entry)it.next();
-					System.out.println(pair.getKey() + " " + pair.getValue());
-				}
 			}
 			@Override
 			public void windowActivated(WindowEvent e) {}

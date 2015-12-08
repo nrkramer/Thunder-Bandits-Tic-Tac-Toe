@@ -1,14 +1,18 @@
 package game;
 
-import java.awt.Color;
+import main.Driver;
+
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -17,13 +21,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import game.GameLogic.GameState;
-import java.awt.BorderLayout;
 
 public class GamePanel extends JPanel {
 	private static final long serialVersionUID = -5452925014639836146L;
 
-	private Player p1 = new Player("Player 1");
-	private Player p2 = new Player("Player 2");
+	private Player p1;
+	private Player p2;
 	public JButton btnBack = new JButton("Back");
 	private TicTacToeBoard board = new TicTacToeBoard();
 	private JButton undo = new JButton("Undo");
@@ -35,14 +38,17 @@ public class GamePanel extends JPanel {
 	private final Component rigidArea_1 = Box.createRigidArea(new Dimension(10, 0));
 	private final Component rigidArea_2 = Box.createRigidArea(new Dimension(0, 10));
 	private final Component rigidArea_3 = Box.createRigidArea(new Dimension(0, 10));
+	private boolean gameEnded = false;
 	
 	/**
 	 * Create the panel.
 	 */
 	public GamePanel() {
+		setPlayer1("Player 1");
+		setPlayer2("Player 2");
+		
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
-		board.setBackground(Color.BLACK);
 		add(board);
 		
 		add(rigidArea_3);
@@ -79,6 +85,22 @@ public class GamePanel extends JPanel {
 		setupGameLogic();
 	}
 	
+	public void setPlayer1(String s) {
+		p1 = new Player(s, 0, 0, 0);
+		if (Driver.scores.get(s) != null) {
+			ArrayList<Integer> scores = Driver.scores.get(s);
+			p1 = new Player(s, scores.get(0), scores.get(1), scores.get(2));
+		}
+	}
+	
+	public void setPlayer2(String s) {
+		p2 = new Player(s, 0, 0, 0);
+		if (Driver.scores.get(s) != null) {
+			ArrayList<Integer> scores = Driver.scores.get(s);
+			p2 = new Player(s, scores.get(0), scores.get(1), scores.get(2));
+		}
+	}
+	
 	private void hideNewGameExit() {
 		panel.setVisible(false);
 		rigidArea_1.setVisible(false);
@@ -108,14 +130,44 @@ public class GamePanel extends JPanel {
 		if (logic.getState() == GameState.Player1Win) {
 			p1.win();
 			p2.lose();
-			showNewGameExit();
+			gameEnded = true;
 		} else if (logic.getState() == GameState.Player2Win) {
 			p2.win();
 			p1.lose();
-			showNewGameExit();
+			gameEnded = true;
 		} else if (logic.getState() == GameState.PlayerTie) {
 			p1.tied();
 			p2.tied();
+			gameEnded = true;
+		}
+		
+		if (gameEnded) { // record scores and show new game panel
+			ArrayList<Integer> scores1 = new ArrayList<Integer>();
+			if (Driver.scores.get(p1.getName()) != null)
+			{
+				scores1 = Driver.scores.get(p1.getName());
+				scores1.set(0, p1.getWins());
+				scores1.set(1, p1.getLosses());
+				scores1.set(2, p1.getTies());
+			} else {
+				scores1.add(p1.getWins());
+				scores1.add(p1.getLosses());
+				scores1.add(p1.getTies());
+			}
+			Driver.scores.put(p1.getName(), scores1);
+			ArrayList<Integer> scores2 = new ArrayList<Integer>();
+			if (Driver.scores.get(p2.getName()) != null)
+			{
+				scores2 = Driver.scores.get(p2.getName());
+				scores2.set(0, p2.getWins());
+				scores2.set(1, p2.getLosses());
+				scores2.set(2, p2.getTies());
+			} else {
+				scores2.add(p2.getWins());
+				scores2.add(p2.getLosses());
+				scores2.add(p2.getTies());
+			}
+			Driver.scores.put(p2.getName(), scores2);
 			showNewGameExit();
 		}
 	}
@@ -135,6 +187,7 @@ public class GamePanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				Reset();
 				hideNewGameExit();
+				gameEnded = false;
 			}
 		});
 		
@@ -156,7 +209,8 @@ public class GamePanel extends JPanel {
 				if (cell != -1) {
 					// player clicked a cell
 					logic.selectedCell(cell);
-					Update();
+					if (!gameEnded)
+						Update();
 					board.Update(arg0.getPoint());
 				}
 			}
@@ -168,6 +222,64 @@ public class GamePanel extends JPanel {
 			public void mousePressed(MouseEvent arg0) {}
 			@Override
 			public void mouseReleased(MouseEvent arg0) {}
+		});
+		
+		addKeyListener(new KeyListener() {
+			@Override
+			public void keyPressed(KeyEvent arg0) {}
+			@Override
+			public void keyReleased(KeyEvent e) {}
+			@Override
+			public void keyTyped(KeyEvent e) {
+				switch(e.getKeyChar()) {
+				case '1':
+					logic.selectedCell(6);
+					if (!gameEnded)
+						Update();
+					break;
+				case '2':
+					logic.selectedCell(7);
+					if (!gameEnded)
+						Update();
+					break;
+				case '3':
+					logic.selectedCell(8);
+					if (!gameEnded)
+						Update();
+					break;
+				case '4':
+					logic.selectedCell(3);
+					if (!gameEnded)
+						Update();
+					break;
+				case '5':
+					logic.selectedCell(4);
+					if (!gameEnded)
+						Update();
+					break;
+				case '6':
+					logic.selectedCell(5);
+					if (!gameEnded)
+						Update();
+					break;
+				case '7':
+					logic.selectedCell(0);
+					if (!gameEnded)
+						Update();
+					break;
+				case '8':
+					logic.selectedCell(1);
+					if (!gameEnded)
+						Update();
+					break;
+				case '9':
+					logic.selectedCell(2);
+					if (!gameEnded)
+						Update();
+					break;
+				default:
+				}
+			}
 		});
 		
 		

@@ -37,7 +37,7 @@ public class MainMenu extends JFrame {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		mainMenuPanel = new JPanel();
-		mainMenuPanel.setBackground(Color.black); // black background
+		mainMenuPanel.setBackground(Color.white);
 		mainMenuPanel.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 		c.weightx = 1.0;
@@ -45,7 +45,7 @@ public class MainMenu extends JFrame {
 		
 		JLabel titleText = new JLabel("Tic-Tac-Toe", SwingConstants.CENTER);
 		titleText.setFont(new Font("Helvetica", Font.BOLD, 30));
-		titleText.setForeground(new Color(200, 200, 255));
+		titleText.setForeground(new Color(100, 100, 255));
 		c.fill = GridBagConstraints.HORIZONTAL; // max width
 		c.gridx = 0;
 		c.gridy = 0;
@@ -55,7 +55,7 @@ public class MainMenu extends JFrame {
 		
 		JLabel titleText2 = new JLabel("By Thunder Bandits", SwingConstants.CENTER);
 		titleText2.setFont(new Font("Helvetica", Font.BOLD, 20));
-		titleText2.setForeground(new Color(255, 200, 200));
+		titleText2.setForeground(new Color(255, 100, 100));
 		c.fill = GridBagConstraints.HORIZONTAL; // max width
 		c.gridx = 0;
 		c.gridy = 1;
@@ -65,6 +65,7 @@ public class MainMenu extends JFrame {
 		
 		startButton = new RoundButton("Start");
 		startButton.setFont(new Font("Helvetica", Font.BOLD, 20));
+		startButton.setFocusable(false);
 		c.fill = GridBagConstraints.BOTH;
 		c.gridx = 0;
 		c.gridy = 2;
@@ -75,6 +76,7 @@ public class MainMenu extends JFrame {
 		
 		rulesButton = new RoundButton("Rules");
 		rulesButton.setFont(new Font("Helvetica", Font.BOLD, 20));
+		rulesButton.setFocusable(false);
 		c.fill = GridBagConstraints.BOTH;
 		c.gridx = 1;
 		c.gridy = 3;
@@ -83,6 +85,7 @@ public class MainMenu extends JFrame {
 		
 		exitButton = new RoundButton("Exit");
 		exitButton.setFont(new Font("Helvetica", Font.BOLD, 20));
+		exitButton.setFocusable(false);
 		c.fill = GridBagConstraints.BOTH;
 		c.gridx = 2;
 		c.gridy = 4;
@@ -116,6 +119,8 @@ public class MainMenu extends JFrame {
 				// Luke: you'll want to change this to the player entry panel
 				setContentPane(gamePanel); // change this to change where start goes
 				validate();
+				gamePanel.setFocusable(true);
+				gamePanel.grabFocus();
 			}
 		});
 		
