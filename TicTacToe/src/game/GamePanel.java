@@ -1,7 +1,5 @@
 package game;
 
-import main.Driver;
-
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -12,7 +10,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.ArrayList;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -21,6 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import game.GameLogic.GameState;
+import main.Driver;
 
 public class GamePanel extends JPanel {
 	private static final long serialVersionUID = -5452925014639836146L;
@@ -29,7 +27,7 @@ public class GamePanel extends JPanel {
 	private Player p2;
 	public JButton btnBack = new JButton("Back");
 	private TicTacToeBoard board = new TicTacToeBoard();
-	private JButton undo = new JButton("Undo");
+	private JButton undo = new JButton("Undo Last Move");
 	private JLabel lblStatus = new JLabel("Player 1's Move");
 	private GameLogic logic = new GameLogic();
 	private final JPanel panel = new JPanel();
@@ -39,6 +37,7 @@ public class GamePanel extends JPanel {
 	private final Component rigidArea_2 = Box.createRigidArea(new Dimension(0, 10));
 	private final Component rigidArea_3 = Box.createRigidArea(new Dimension(0, 10));
 	private boolean gameEnded = false;
+	private final JButton btnToggleNumbers = new JButton("Toggle Numbers");
 	
 	/**
 	 * Create the panel.
@@ -68,8 +67,7 @@ public class GamePanel extends JPanel {
 		
 		bottomPanel.add(btnBack);
 		
-		Component horizontalGlue_1 = Box.createHorizontalGlue();
-		bottomPanel.add(horizontalGlue_1);
+		bottomPanel.add(btnToggleNumbers);
 		
 		bottomPanel.add(undo);
 		
@@ -88,16 +86,14 @@ public class GamePanel extends JPanel {
 	public void setPlayer1(String s) {
 		p1 = new Player(s, 0, 0, 0);
 		if (Driver.scores.get(s) != null) {
-			ArrayList<Integer> scores = Driver.scores.get(s);
-			p1 = new Player(s, scores.get(0), scores.get(1), scores.get(2));
+			p1 = Driver.scores.get(s);
 		}
 	}
 	
 	public void setPlayer2(String s) {
 		p2 = new Player(s, 0, 0, 0);
 		if (Driver.scores.get(s) != null) {
-			ArrayList<Integer> scores = Driver.scores.get(s);
-			p2 = new Player(s, scores.get(0), scores.get(1), scores.get(2));
+			p2 = Driver.scores.get(s);
 		}
 	}
 	
@@ -141,44 +137,26 @@ public class GamePanel extends JPanel {
 			gameEnded = true;
 		}
 		
-		if (gameEnded) { // record scores and show new game panel
-			ArrayList<Integer> scores1 = new ArrayList<Integer>();
-			if (Driver.scores.get(p1.getName()) != null)
-			{
-				scores1 = Driver.scores.get(p1.getName());
-				scores1.set(0, p1.getWins());
-				scores1.set(1, p1.getLosses());
-				scores1.set(2, p1.getTies());
-			} else {
-				scores1.add(p1.getWins());
-				scores1.add(p1.getLosses());
-				scores1.add(p1.getTies());
-			}
-			Driver.scores.put(p1.getName(), scores1);
-			ArrayList<Integer> scores2 = new ArrayList<Integer>();
-			if (Driver.scores.get(p2.getName()) != null)
-			{
-				scores2 = Driver.scores.get(p2.getName());
-				scores2.set(0, p2.getWins());
-				scores2.set(1, p2.getLosses());
-				scores2.set(2, p2.getTies());
-			} else {
-				scores2.add(p2.getWins());
-				scores2.add(p2.getLosses());
-				scores2.add(p2.getTies());
-			}
-			Driver.scores.put(p2.getName(), scores2);
+		if (gameEnded)
 			showNewGameExit();
-		}
 	}
 	
 	private void setupGameLogic() {
+		btnToggleNumbers.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				board.toggleNumbersVisible();
+				grabFocus();
+			}
+		});
+		
 		undo.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				if (logic.canUndo())
 					logic.undo();
 				Update();
+				grabFocus();
 			}
 		});
 		
@@ -188,6 +166,7 @@ public class GamePanel extends JPanel {
 				Reset();
 				hideNewGameExit();
 				gameEnded = false;
+				grabFocus();
 			}
 		});
 		

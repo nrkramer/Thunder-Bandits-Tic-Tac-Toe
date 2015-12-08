@@ -30,7 +30,8 @@ public class MainMenu extends JFrame {
 	private RoundButton exitButton;
 	private RoundButton leaderBoard;
 	private UserNames userNames;
-	Rules rules = new Rules();
+	private Rules rules;
+	private LeaderBoard lb;
 	
 	public MainMenu() {
 		super("Tic-Tac-Toe");
@@ -127,6 +128,12 @@ public class MainMenu extends JFrame {
 			}
 		});
 		
+		rules = new Rules(this);
+		rules.setModal(true);
+		
+		lb = new LeaderBoard(this);
+		lb.setModal(true);
+		
 		setContentPane(mainMenuPanel);
 		
 		// start clicked 
@@ -159,24 +166,14 @@ public class MainMenu extends JFrame {
 			}
 		});
 		
-		/*leaderBoard.addActionListener(new ActionListener() {
+		leaderBoard.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				try{
-				FileReader reader = new FileReader("C:\\Users\\Billy\\Downloads\\Thunder-Bandits-Tic-Tac-Toe-master.zip\\Thunder-Bandits-Tic-Tac-Toe-master\\TicTacToe\\src\\main\\LeaderBoards.txt");
-	            int character;
-	 
-	            while ((character = reader.read()) != -1) {
-	                System.out.print((char) character);
-	            }
-	            reader.close();
-	 
-	        } catch (IOException e) {
-	            e.printStackTrace();
-	        }
+				lb.updateLeaders();
+				lb.setVisible(true);
 			}		
-		});*/
+		});
 		
 		pack();
 		setVisible(true);

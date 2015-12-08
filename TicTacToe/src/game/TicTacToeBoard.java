@@ -141,6 +141,10 @@ public class TicTacToeBoard extends JPanel {
 		return new Point(-1, -1);
 	}
 	
+	public void toggleNumbersVisible() {
+		showNumbers = !showNumbers;
+	}
+	
 	public void setBoardState(int[] state) {
 		boardState = state;
 		repaint();
