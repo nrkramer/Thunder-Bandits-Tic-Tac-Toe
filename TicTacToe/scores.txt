@@ -1,2 +1,2 @@
-Player 2,10,31,3
-Player 1,31,10,3
+Player 2,11,36,3
+Player 1,36,11,3
