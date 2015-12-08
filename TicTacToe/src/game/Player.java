@@ -6,8 +6,11 @@ public class Player {
 	private int ties = 0;
 	private String playerName;
 	
-	public Player(String name) {
+	public Player(String name, int wins, int losses, int ties) {
 		playerName = name;
+		this.wins = wins;
+		this.losses = losses;
+		this.ties = ties;
 	}
 	
 	public String getName() {
@@ -19,7 +22,7 @@ public class Player {
 	}
 	
 	public void lose() {
-		losses--;
+		losses++;
 	}
 	
 	public void tied() {

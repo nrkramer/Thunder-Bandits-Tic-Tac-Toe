@@ -116,9 +116,9 @@ public class GameLogic {
 	
 	public String getPlayerCurrentMove() {
 		if (state == GameState.Player1)
-			return "P1";
+			return "X";
 		else if (state == GameState.Player2) {
-			return "P2";
+			return "O";
 		} else {
 			return "";
 		}

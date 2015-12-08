@@ -9,9 +9,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -30,7 +27,8 @@ public class MainMenu extends JFrame {
 	private RoundButton exitButton;
 	private RoundButton leaderBoard;
 	private UserNames userNames;
-	Rules rules = new Rules();
+	private Rules rules;
+	private LeaderBoard lb;
 	
 	public MainMenu() {
 		super("Tic-Tac-Toe");
@@ -43,7 +41,7 @@ public class MainMenu extends JFrame {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		mainMenuPanel = new JPanel();
-		mainMenuPanel.setBackground(Color.black); // black background
+		mainMenuPanel.setBackground(Color.white);
 		mainMenuPanel.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 		c.weightx = 1.0;
@@ -51,7 +49,7 @@ public class MainMenu extends JFrame {
 		
 		JLabel titleText = new JLabel("Tic-Tac-Toe", SwingConstants.CENTER);
 		titleText.setFont(new Font("Helvetica", Font.BOLD, 30));
-		titleText.setForeground(new Color(200, 200, 255));
+		titleText.setForeground(new Color(100, 100, 255));
 		c.fill = GridBagConstraints.HORIZONTAL; // max width
 		c.gridx = 0;
 		c.gridy = 0;
@@ -61,7 +59,7 @@ public class MainMenu extends JFrame {
 		
 		JLabel titleText2 = new JLabel("By Thunder Bandits", SwingConstants.CENTER);
 		titleText2.setFont(new Font("Helvetica", Font.BOLD, 20));
-		titleText2.setForeground(new Color(255, 200, 200));
+		titleText2.setForeground(new Color(255, 100, 100));
 		c.fill = GridBagConstraints.HORIZONTAL; // max width
 		c.gridx = 0;
 		c.gridy = 1;
@@ -71,6 +69,7 @@ public class MainMenu extends JFrame {
 		
 		startButton = new RoundButton("Start");
 		startButton.setFont(new Font("Helvetica", Font.BOLD, 20));
+		startButton.setFocusable(false);
 		c.fill = GridBagConstraints.BOTH;
 		c.gridx = 0;
 		c.gridy = 2;
@@ -81,6 +80,7 @@ public class MainMenu extends JFrame {
 		
 		rulesButton = new RoundButton("Rules");
 		rulesButton.setFont(new Font("Helvetica", Font.BOLD, 20));
+		rulesButton.setFocusable(false);
 		c.fill = GridBagConstraints.BOTH;
 		c.gridx = 1;
 		c.gridy = 3;
@@ -89,6 +89,7 @@ public class MainMenu extends JFrame {
 		
 		exitButton = new RoundButton("Exit");
 		exitButton.setFont(new Font("Helvetica", Font.BOLD, 20));
+		exitButton.setFocusable(false);
 		c.fill = GridBagConstraints.BOTH;
 		c.gridx = 2;
 		c.gridy = 4;
@@ -96,6 +97,7 @@ public class MainMenu extends JFrame {
 		mainMenuPanel.add(exitButton, c);
 		
 		leaderBoard = new RoundButton("Leaders");
+		leaderBoard.setFocusable(false);
 		leaderBoard.setFont(new Font("Helvetica", Font.BOLD, 20));
 		c.fill = GridBagConstraints.BOTH;
 		c.gridx = 2;
@@ -115,6 +117,8 @@ public class MainMenu extends JFrame {
 		mainMenuPanel.add(versionText, c);
 		
 		gamePanel = new GamePanel();
+		userNames = new UserNames();
+		
 		gamePanel.btnBack.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -122,6 +126,12 @@ public class MainMenu extends JFrame {
 				validate();
 			}
 		});
+		
+		rules = new Rules(this);
+		rules.setModal(true);
+		
+		lb = new LeaderBoard(this);
+		lb.setModal(true);
 		
 		setContentPane(mainMenuPanel);
 		
@@ -131,6 +141,8 @@ public class MainMenu extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				setContentPane(gamePanel); // change this to change where start goes
 				validate();
+				gamePanel.setFocusable(true);
+				gamePanel.grabFocus();
 			}
 		});
 		
@@ -153,24 +165,14 @@ public class MainMenu extends JFrame {
 			}
 		});
 		
-		/*leaderBoard.addActionListener(new ActionListener() {
+		leaderBoard.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				try{
-				FileReader reader = new FileReader("C:\\Users\\Billy\\Downloads\\Thunder-Bandits-Tic-Tac-Toe-master.zip\\Thunder-Bandits-Tic-Tac-Toe-master\\TicTacToe\\src\\main\\LeaderBoards.txt");
-	            int character;
-	 
-	            while ((character = reader.read()) != -1) {
-	                System.out.print((char) character);
-	            }
-	            reader.close();
-	 
-	        } catch (IOException e) {
-	            e.printStackTrace();
-	        }
+				lb.updateLeaders();
+				lb.setVisible(true);
 			}		
-		});*/
+		});
 		
 		pack();
 		setVisible(true);

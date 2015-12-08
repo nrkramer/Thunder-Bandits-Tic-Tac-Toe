@@ -9,17 +9,18 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import javax.swing.UIManager;
 
+import game.Player;
+
 public class Driver {
 
 	public static String version = "1.0.0";
-	public static HashMap<String, ArrayList<Integer>> scores = new HashMap<String, ArrayList<Integer>>();
+	public static HashMap<String, Player> scores = new HashMap<String, Player>();
 	
 	public static void main(String[] args) {
 		readScores();
@@ -51,12 +52,9 @@ public class Driver {
 			BufferedReader br = new BufferedReader(new FileReader(f));
 			String line = br.readLine();
 			while(line != null) {
-				String[] pcs = line.split(" ");
-				ArrayList<Integer> records = new ArrayList<Integer>();
-				records.add(Integer.valueOf(pcs[1]));
-				records.add(Integer.valueOf(pcs[2]));
-				records.add(Integer.valueOf(pcs[3]));
-				scores.put(pcs[0], records);
+				String[] pcs = line.split(",");
+				Player p = new Player(pcs[0], Integer.valueOf(pcs[1]), Integer.valueOf(pcs[2]), Integer.valueOf(pcs[3]));
+				scores.put(pcs[0], p);
 				line = br.readLine();
 			}
 			br.close();
@@ -77,8 +75,9 @@ public class Driver {
 			Iterator it = scores.entrySet().iterator();
 			while(it.hasNext()) {
 				Map.Entry pair = (Map.Entry)it.next();
-				ArrayList<Integer> value = (ArrayList<Integer>)pair.getValue();
-				writer.println(pair.getKey() + " " + value.get(0) + " " + value.get(1) + " " + value.get(2));
+				Player value = (Player)pair.getValue();
+				// player_name,wins,losses,ties
+				writer.println(pair.getKey() + "," + value.getWins() + "," + value.getLosses() + "," + value.getTies());
 			}
 			writer.close();
 		} catch (IOException e) {
@@ -93,11 +92,7 @@ public class Driver {
 			public void windowClosed(WindowEvent e) {
 				// record scores here
 				writeScores();
-				Iterator it = scores.entrySet().iterator();
-				while(it.hasNext()) {
-					Map.Entry pair = (Map.Entry)it.next();
-					System.out.println(pair.getKey() + " " + pair.getValue());
-				}
+				System.exit(0);
 			}
 			@Override
 			public void windowActivated(WindowEvent e) {}
